@@ -68,7 +68,7 @@ def selection_sort(items):
         sorted_index += 1
 
 
-def insertion_sort(items):
+def insertion_sort_(items):
     """Sort given items by taking first unsorted item, inserting it in sorted
     order in front of items, and repeating until all items are in order.
     TODO: Running time: ??? Why and under what conditions?
@@ -115,3 +115,25 @@ def binary_insertion_sort(items):
         sorted_index += 1
 
     return items
+
+
+def insertion_sort(items):
+    something_swapped = True
+
+    offset = 0
+
+    while something_swapped:
+        something_swapped = False
+
+        for i in range(offset, len(items) - 2 - offset):
+            if items[i] > items[i + 1]:
+                swap_items(items, i, i+1)
+                something_swapped = True
+
+        if not something_swapped:
+            break
+
+        for i in range(offset + 2, len(items) - offset):
+            if items[-i] > items[-i + 1]:
+                swap_items(items, -i, -i + 1)
+                something_swapped = True
