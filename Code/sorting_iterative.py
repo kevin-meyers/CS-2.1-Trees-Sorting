@@ -3,8 +3,8 @@
 
 def is_sorted(items):
     """Return a boolean indicating whether given items are in sorted order.
-    TODO: Running time: ??? Why and under what conditions?
-    TODO: Memory usage: ??? Why and under what conditions?"""
+    TODO: Running time: O(n) because it loops once till it finds any out of place
+    TODO: Memory usage: O(1) because we arent making any copies etc"""
     if len(items) < 2:
         return True
 
@@ -24,8 +24,8 @@ def swap_items(items, first_i, second_i):
 def bubble_sort(items, ascending=True, key=None):
     """Sort given items by swapping adjacent items that are out of order, and
     repeating until all items are in sorted order.
-    TODO: Running time: ??? Why and under what conditions?
-    TODO: Memory usage: ??? Why and under what conditions?"""
+    TODO: Running time: O(n^2) triangular but...
+    TODO: Memory usage: O(1) Why and under what conditions?"""
     if key is None:
         key = lambda x: x
 
@@ -52,10 +52,9 @@ def bubble_sort(items, ascending=True, key=None):
 def selection_sort(items):
     """Sort given items by finding minimum item, swapping it with first
     unsorted item, and repeating until all items are in sorted order.
-    TODO: Running time: ??? Why and under what conditions?
-    TODO: Memory usage: ??? Why and under what conditions?"""
-    sorted_index = 0
-    while sorted_index < len(items):
+    TODO: Running time: O(n^2) O(n) swaps
+    TODO: Memory usage: O(1) """
+    for sorted_index in range(len(items)):
         min_index = len(items) - 1
         min_num = items[-1]
 
@@ -65,14 +64,13 @@ def selection_sort(items):
                 min_index = index
 
         swap_items(items, sorted_index, min_index)
-        sorted_index += 1
 
 
-def insertion_sort_(items):
+def insertion_sort(items):
     """Sort given items by taking first unsorted item, inserting it in sorted
     order in front of items, and repeating until all items are in order.
-    TODO: Running time: ??? Why and under what conditions?
-    TODO: Memory usage: ??? Why and under what conditions?"""
+    TODO: Running time: O(n^2) mine is O(n^3) Why and under what conditions?
+    TODO: Memory usage: O(1) Why and under what conditions?"""
     sorted_index = 0
     while sorted_index < len(items):
         for index, s_item in enumerate(items[:sorted_index]):
@@ -117,15 +115,19 @@ def binary_insertion_sort(items):
     return items
 
 
-def insertion_sort(items):
+def cocktail_shaker_sort(items):
     something_swapped = True
 
     offset = 0
 
     while something_swapped:
         something_swapped = False
+        swapped_same = False
 
         for i in range(offset, len(items) - 2 - offset):
+            if items[i] > items[i + 1]:
+                swapped_same = True
+
             if items[i] > items[i + 1]:
                 swap_items(items, i, i+1)
                 something_swapped = True
@@ -133,7 +135,13 @@ def insertion_sort(items):
         if not something_swapped:
             break
 
-        for i in range(offset + 2, len(items) - offset):
+        for i in range(offset + 2, len(items) - offset + 1):
+            if items[-i] == items[-i + 1]:
+                swapped_same = True
+
             if items[-i] > items[-i + 1]:
                 swap_items(items, -i, -i + 1)
                 something_swapped = True
+
+        if not swapped_same:
+            offset += 1
