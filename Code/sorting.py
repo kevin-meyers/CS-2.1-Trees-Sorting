@@ -1,6 +1,9 @@
 #!python
 
-from sorting_iterative import is_sorted, bubble_sort, selection_sort, insertion_sort
+from sorting_iterative import (
+    is_sorted, bubble_sort, selection_sort, insertion_sort,
+    cocktail_shaker_sort
+)
 from sorting_recursive import split_sort_merge, merge_sort, quick_sort
 from sorting_integer import counting_sort, bucket_sort
 
@@ -57,7 +60,7 @@ def main():
             for name in globals():
                 if 'sort' in name:
                     print('    {}'.format(name))
-            return
+                    return
 
     # Get num_items and max_value, but don't explode if input is not an integer
     try:

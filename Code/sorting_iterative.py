@@ -115,33 +115,43 @@ def binary_insertion_sort(items):
     return items
 
 
+def bubble_item(items, i):
+    if items[i] == items[i + 1]:
+        return False, True
+
+    if items[i] > items[i + 1]:
+        swap_items(items, i, i+1)
+        return True, False
+
+    return False, False
+
+
+def bubble_pass(items, start, end):
+    something_swapped = False
+    swapped_same = False
+    for i in range(start, end):
+        swapped, same = bubble_item(items, i)
+        something_swapped = something_swapped or swapped
+        swapped_same = swapped_same or same
+
+    return something_swapped, swapped_same
+
+
 def cocktail_shaker_sort(items):
+    swapped_same = False
     something_swapped = True
-
     offset = 0
-
     while something_swapped:
-        something_swapped = False
-        swapped_same = False
 
-        for i in range(offset, len(items) - 2 - offset):
-            if items[i] > items[i + 1]:
-                swapped_same = True
+        something_swapped, same = bubble_pass(items, offset, len(items) - 2 - offset)
+        swapped_same = swapped_same or same
 
-            if items[i] > items[i + 1]:
-                swap_items(items, i, i+1)
-                something_swapped = True
 
         if not something_swapped:
             break
 
-        for i in range(offset + 2, len(items) - offset + 1):
-            if items[-i] == items[-i + 1]:
-                swapped_same = True
-
-            if items[-i] > items[-i + 1]:
-                swap_items(items, -i, -i + 1)
-                something_swapped = True
+        something_swapped, same = bubble_pass(items, offset + 2, len(items) - offset)
+        swapped_same = swapped_same or same
 
         if not swapped_same:
             offset += 1
