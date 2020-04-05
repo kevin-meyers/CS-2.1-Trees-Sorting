@@ -1,14 +1,36 @@
 #!python
 
+from sorting_iterative import bubble_sort
+
 
 def merge(items1, items2):
     """Merge given lists of items, each assumed to already be in sorted order,
     and return a new list containing all items in sorted order.
     TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
-    # TODO: Repeat until one list is empty
-    # TODO: Find minimum item in both lists and append it to new list
-    # TODO: Append remaining items in non-empty list to new list
+    index_1, index_2 = 0, 0
+
+    result = []
+
+    while index_1 < len(items1) and index_2 < len(items2):
+        if items1[index_1] <= items2[index_2]:
+            result.append(items1[index_1])
+            index_1 += 1
+
+        else:
+            result.append(items2[index_2])
+            index_2 += 1
+
+    while index_1 < len(items1):
+        result.append(items1[index_1])
+        index_1 += 1
+
+    while index_2 < len(items2):
+        result.append(items2[index_2])
+        index_2 += 1
+
+    return result
+
 
 
 def split_sort_merge(items):
@@ -17,21 +39,28 @@ def split_sort_merge(items):
     a list in sorted order.
     TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
-    # TODO: Split items list into approximately equal halves
-    # TODO: Sort each half using any other sorting algorithm
-    # TODO: Merge sorted halves into one list in sorted order
+    first_half = items[len(items)//2:]
+    second_half = items[:len(items)//2]
+    del items
+
+    bubble_sort(first_half)
+    bubble_sort(second_half)
+
+    items[:] = merge(first_half, second_half)
 
 
-def merge_sort(items):
+def _merge_sort(items):
     """Sort given items by splitting list into two approximately equal halves,
     sorting each recursively, and merging results into a list in sorted order.
     TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
-    # TODO: Check if list is so small it's already sorted (base case)
-    # TODO: Split items list into approximately equal halves
-    # TODO: Sort each half by recursively calling merge sort
-    # TODO: Merge sorted halves into one list in sorted order
+    if len(items) <= 1:
+        return items
 
+    return merge(_merge_sort(items[:len(items)//2]), _merge_sort(items[len(items)//2:]))
+
+def merge_sort(items):
+    items[:] = _merge_sort(items)
 
 def partition(items, low, high):
     """Return index `p` after in-place partitioning given items in range
