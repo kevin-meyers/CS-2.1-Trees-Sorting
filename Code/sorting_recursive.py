@@ -73,32 +73,44 @@ def merge_sort(items):
     """ Helper for inplace. """
     items[:] = _merge_sort(items)
 
-def partition(items, low, high):
-    """Return index `p` after in-place partitioning given items in range
-    `[low...high]` by choosing a pivot (TODO: document your method here) from
-    that range, moving pivot into index `p`, items less than pivot into range
-    `[low...p-1]`, and items greater than pivot into range `[p+1...high]`.
-    TODO: Running time: ??? Why and under what conditions?
-    TODO: Memory usage: ??? Why and under what conditions?"""
 
-    pivot_index = randint(low, high)
-    items[pivot_index], items[high] = items[high], items[pivot_index]
-    pivot_index = high
-    pivot = items[pivot_index]
+def make_swapper_of(items):
+    """ Makes a swapping function, holds items in closure. """
+    def swap(i_1, i_2):
+        items[i_1], items[i_2] = items[i_2], items[i_1]
 
-    left_offset = low
-    i = low
-    while i <= high:
-        if items[i] < pivot:
-            items[left_offset], items[i] = items[i], items[left_offset]
-            left_offset += 1
+    return swap
 
-        i += 1
+def make_partitioner_of(items):
+    """ Makes a partitioning function, holds items in closure. """
+    def partitioner(low, high):
+        """Return index `p` after in-place partitioning given items in range
+        `[low...high]` by choosing a pivot (TODO: document your method here) from
+        that range, moving pivot into index `p`, items less than pivot into range
+        `[low...p-1]`, and items greater than pivot into range `[p+1...high]`.
+        TODO: Running time: ??? Why and under what conditions?
+        TODO: Memory usage: ??? Why and under what conditions?"""
+        swap = make_swapper_of(items)
 
+        pivot_index = randint(low, high)
+        swap(pivot_index, high)
+        pivot_index = high
+        pivot = items[pivot_index]
 
-    items[pivot_index], items[left_offset] = items[left_offset], items[pivot_index]
+        left_offset = low
+        i = low
+        while i <= high:
+            if items[i] < pivot:
+                swap(left_offset, i)
+                left_offset += 1
 
-    return left_offset
+            i += 1
+
+        swap(pivot_index, left_offset)
+
+        return left_offset
+
+    return partitioner
 
 
 def quick_sort(items):
@@ -107,11 +119,13 @@ def quick_sort(items):
     TODO: Best case running time: ??? Why and under what conditions?
     TODO: Worst case running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
+    partition = make_partitioner_of(items)
+
     def recursive_function(low, high):
         if high <= low:
             return
 
-        pivot = partition(items, low, high)
+        pivot = partition(low, high)
 
         recursive_function(pivot + 1, high)
         recursive_function(low, pivot - 1)
@@ -122,7 +136,8 @@ def quick_sort(items):
 
 if __name__ == '__main__':
     L = [1, 19, 4, 4, 4, 4, 4, 2, 25, 100, 13]
-    PIVOT_INDEX = partition(L, 0, len(L)-1)
+    partition = make_partitioner_of(L)
+    PIVOT_INDEX = partition(0, len(L)-1)
     PIVOT = L[PIVOT_INDEX]
     for index, item in enumerate(L):
         if index == PIVOT_INDEX:
