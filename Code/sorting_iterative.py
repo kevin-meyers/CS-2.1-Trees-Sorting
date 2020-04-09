@@ -18,8 +18,11 @@ def is_sorted(items):
     return True
 
 
-def swap_items(items, first_i, second_i):
-    items[first_i], items[second_i] = items[second_i], items[first_i]
+def create_item_swapper(items):
+    def swap_indices(first_i, second_i):
+        items[first_i], items[second_i] = items[second_i], items[first_i]
+
+    return swap_indices
 
 def bubble_sort(items, ascending=True, key=None):
     """Sort given items by swapping adjacent items that are out of order, and
@@ -35,6 +38,8 @@ def bubble_sort(items, ascending=True, key=None):
 
         return key(x) < key(y)
 
+    swap_items_at = create_item_swapper(items)
+
     something_swapped = True
 
     while something_swapped:
@@ -43,7 +48,7 @@ def bubble_sort(items, ascending=True, key=None):
 
         while prev_i + 1 < len(items):
             if compare(items[prev_i], items[prev_i + 1]):
-                swap_items(items, prev_i, prev_i + 1)
+                swap_items_at(prev_i, prev_i + 1)
                 something_swapped=True
 
             prev_i += 1
@@ -54,6 +59,9 @@ def selection_sort(items):
     unsorted item, and repeating until all items are in sorted order.
     TODO: Running time: O(n^2) O(n) swaps
     TODO: Memory usage: O(1) """
+
+    swap_items_at = create_item_swapper(items)
+
     for sorted_index in range(len(items)):
         min_index = len(items) - 1
         min_num = items[-1]
@@ -63,7 +71,7 @@ def selection_sort(items):
                 min_num = item
                 min_index = index
 
-        swap_items(items, sorted_index, min_index)
+        swap_items_at(sorted_index, min_index)
 
 
 def insertion_sort(items):
@@ -120,7 +128,8 @@ def bubble_item(items, i):
         return False, True
 
     if items[i] > items[i + 1]:
-        swap_items(items, i, i+1)
+        swap_items_at = create_item_swapper(items)
+        swap_items_at(i, i+1)
         return True, False
 
     return False, False

@@ -1,4 +1,5 @@
 #!python
+from random import randint
 
 from sorting_iterative import bubble_sort
 
@@ -29,8 +30,16 @@ def merge(items1, items2):
         result.append(items2[index_2])
         index_2 += 1
 
+    result.extend(items1[index_1:] + items2[index_2:])
     return result
 
+
+
+def left_half_of(items):
+    return items[:len(items)//2]
+
+def right_half_of(items):
+    return items[len(items)//2:]
 
 
 def split_sort_merge(items):
@@ -41,7 +50,6 @@ def split_sort_merge(items):
     TODO: Memory usage: ??? Why and under what conditions?"""
     first_half = items[len(items)//2:]
     second_half = items[:len(items)//2]
-    del items
 
     bubble_sort(first_half)
     bubble_sort(second_half)
@@ -57,7 +65,7 @@ def _merge_sort(items):
     if len(items) <= 1:
         return items
 
-    return merge(_merge_sort(items[:len(items)//2]), _merge_sort(items[len(items)//2:]))
+    return merge(_merge_sort(left_half_of(items)), _merge_sort(right_half_of(items)))
 
 def merge_sort(items):
     items[:] = _merge_sort(items)
@@ -69,11 +77,41 @@ def partition(items, low, high):
     `[low...p-1]`, and items greater than pivot into range `[p+1...high]`.
     TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
-    # TODO: Choose a pivot any way and document your method in docstring above
-    # TODO: Loop through all items in range [low...high]
-    # TODO: Move items less than pivot into front of range [low...p-1]
-    # TODO: Move items greater than pivot into back of range [p+1...high]
-    # TODO: Move pivot item into final position [p] and return index p
+
+    pivot_index = randint(low, high)
+    items[pivot_index], items[high] = items[high], items[pivot_index]
+    pivot_index = high
+    pivot = items[pivot_index]
+
+    left_offset = low
+    i = low
+    while i <= high:
+        if items[i] < pivot:
+            items[left_offset], items[i] = items[i], items[left_offset]
+            left_offset += 1
+
+        i += 1
+
+
+    items[pivot_index], items[left_offset] = items[left_offset], items[pivot_index]
+
+    return left_offset
+
+
+if __name__ == '__main__':
+    l = [1, 19, 4, 4, 4, 4, 4, 2, 25, 100, 13]
+    pivot_index = partition(l, 0, len(l)-1)
+    pivot = l[pivot_index]
+    for index, item in enumerate(l):
+        if index == pivot_index:
+            assert item == pivot
+
+        elif index < pivot_index:
+            assert item < pivot
+
+        else:
+            assert item >= pivot
+
 
 
 def quick_sort(items, low=None, high=None):

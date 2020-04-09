@@ -6,27 +6,30 @@ def counting_sort(numbers):
     TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
     def counts_of(n):
-        start = min(n)
-        end = max(n)
+        ''' O(2n + range)  '''
+        start = min(n)  # O(n)
+        end = max(n)  # O(n)
 
-        result = [0] * (end - start + 1)
-        for num in n:
-            result[num - start] += 1
+        result = [0] * (end - start + 1)  # O(range)
+        for num in n:  # O(n)
+            result[num - start] += 1  # O(1)
 
-        return enumerate(result, start)
+        return enumerate(result, start)  # O(1)
 
     def expand_from(counts):
+        ''' O(range + n) '''
         result = []
-        for num, count in counts:
-            result.extend([num] * count)
+        for num, count in counts:  # O(range)
+            result.extend([num] * count)  # O(1 + n / range)
 
         return result
 
 
-        if numbers == []:
-            return []
+    if numbers == []:
+        return []
 
 
+    # O(3n + 2range) = O(n + range)
     numbers[:] = expand_from(counts_of(numbers))
 
 
@@ -37,34 +40,41 @@ def counting_sort(numbers):
 def bucket_sort(numbers, num_buckets=10):
     """Sort given numbers by distributing into buckets representing subranges,
     then sorting each bucket and concatenating all buckets in sorted order.
+
+    O(n + range + nb) = O(nb + range) range is based on counting sort
     TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
     def build_compare_with(item):
         return lambda x: x < item
 
     def expand_from(b):
+        ''' O(b * 2n/b + b * step) =  O(n + range) '''
         result = []
-        for bucket in buckets:
-            counting_sort(bucket)
-            result.extend(bucket)
+        for bucket in b:  # O(b)
+            counting_sort(bucket)  # O(n/b + step)
+            result.extend(bucket) # O(n/b)
 
         return result
 
 
-    start = min(numbers)
-    end = max(numbers)
-    step = (end - start) // num_buckets + 1
+    start = min(numbers)  # O(n)
+    end = max(numbers)  # O(n)
 
+    # O(b * step) = O(range)
+    step = (end - start) // num_buckets + 1  # O(1)
 
+    # O(b) b is num_buckets
     ranges = [build_compare_with(bound) for bound in range(start+step, end+step, step)]
-    buckets = [[] for _ in range(num_buckets)]
-    for num in numbers:
-        for index, larger_than in enumerate(ranges):
-            if larger_than(num):
-                buckets[index].append(num)
+    buckets = [[] for _ in range(num_buckets)]  # O(b)
+    for num in numbers:  # O(n)
+        # Consider using binary search to find the bucket each num belongs in
+        for index, larger_than in enumerate(ranges):  # O(b)
+            if larger_than(num):  # O(1)
+                buckets[index].append(num)  # O(1)
                 break
 
-    numbers[:] = expand_from(buckets)
+    # bucket building is O(3n + 2b + nb) = O(n + b + nb) = O(n * b)
+    numbers[:] = expand_from(buckets) # O(n + range)
 
 
     # FIXME: Improve this to mutate input instead of creating new output list
