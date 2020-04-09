@@ -36,9 +36,11 @@ def merge(items1, items2):
 
 
 def left_half_of(items):
+    """ Query helper for readability """
     return items[:len(items)//2]
 
 def right_half_of(items):
+    """ Query helper for readability """
     return items[len(items)//2:]
 
 
@@ -68,6 +70,7 @@ def _merge_sort(items):
     return merge(_merge_sort(left_half_of(items)), _merge_sort(right_half_of(items)))
 
 def merge_sort(items):
+    """ Helper for inplace. """
     items[:] = _merge_sort(items)
 
 def partition(items, low, high):
@@ -98,22 +101,6 @@ def partition(items, low, high):
     return left_offset
 
 
-if __name__ == '__main__':
-    l = [1, 19, 4, 4, 4, 4, 4, 2, 25, 100, 13]
-    pivot_index = partition(l, 0, len(l)-1)
-    pivot = l[pivot_index]
-    for index, item in enumerate(l):
-        if index == pivot_index:
-            assert item == pivot
-
-        elif index < pivot_index:
-            assert item < pivot
-
-        else:
-            assert item >= pivot
-
-
-
 def quick_sort(items, low=None, high=None):
     """Sort given items in place by partitioning items in range `[low...high]`
     around a pivot item and recursively sorting each remaining sublist range.
@@ -121,6 +108,34 @@ def quick_sort(items, low=None, high=None):
     TODO: Worst case running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
     # TODO: Check if high and low range bounds have default values (not given)
+    if low is None:
+        low = 0
+        high = len(items) - 1
+
     # TODO: Check if list or range is so small it's already sorted (base case)
+    if high - low <= 1:
+        return
+
     # TODO: Partition items in-place around a pivot and get index of pivot
+    pivot = partition(items, low, high)
     # TODO: Sort each sublist range by recursively calling quick sort
+    quick_sort(items, pivot + 1, high)
+    quick_sort(items, low, pivot - 1)
+
+
+
+if __name__ == '__main__':
+    L = [1, 19, 4, 4, 4, 4, 4, 2, 25, 100, 13]
+    PIVOT_INDEX = partition(L, 0, len(L)-1)
+    PIVOT = L[PIVOT_INDEX]
+    for index, item in enumerate(L):
+        if index == PIVOT_INDEX:
+            assert item == PIVOT
+
+        elif index < PIVOT_INDEX:
+            assert item < PIVOT
+
+        else:
+            assert item >= PIVOT
+
+
