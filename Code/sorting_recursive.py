@@ -105,9 +105,7 @@ def make_partitioner_of(items):
         while low < pivot_index_low:
             if items[low] == pivot:
                 pivot_index_low -= 1
-                print(items, pivot)
                 swap(low, pivot_index_low)
-                print(items, low)
                 low -= 1
 
             elif items[low] < pivot:
@@ -117,15 +115,13 @@ def make_partitioner_of(items):
             low += 1
 
         for i in range(pivot_index_high - pivot_index_low + 1):
-            print(i)
             if left_offset + i >= pivot_index_low:
                 break
 
-            swap(left_offset, pivot_index_high - i)
+            swap(left_offset + i, pivot_index_high - i)
 
-        # return [left_offset, left_offset + i] 
+        return [left_offset, left_offset + i]
 
-        print(f'end items: {items}')
         # swap(pivot_index_high, left_offset)
         return left_offset
 
@@ -144,10 +140,10 @@ def quick_sort(items):
         if high <= low:
             return
 
-        pivot = partitioner(low, high)
+        pivot_low, pivot_high = partitioner(low, high)
 
-        recursive_function(pivot + 1, high)
-        recursive_function(low, pivot - 1)
+        recursive_function(pivot_high + 1, high)
+        recursive_function(low, pivot_low - 1)
 
     recursive_function(0, len(items)-1)
 
