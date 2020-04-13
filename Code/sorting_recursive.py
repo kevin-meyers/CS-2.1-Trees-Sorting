@@ -102,25 +102,29 @@ def make_partitioner_of(items):
         pivot = items[pivot_index_high]
 
         left_offset = low
-        while low <= high:
+        while low < pivot_index_low:
             if items[low] == pivot:
                 pivot_index_low -= 1
-                '''swap(low, pivot_indices[0])'''
+                print(items, pivot)
+                swap(low, pivot_index_low)
+                print(items, low)
+                low -= 1
 
-            if items[low] < pivot:
+            elif items[low] < pivot:
                 swap(left_offset, low)
                 left_offset += 1
 
             low += 1
 
-        for i in range(pivot_index_high - pivot_index_low + 1):
-            if left_offset + i >= pivot_index_low:
-                break
+      #  for i in range(pivot_index_high - pivot_index_low + 1):
+      #      if left_offset + i >= pivot_index_low:
+      #          break
 
-            '''swap(left_offset, pivot_indices[1] - i)
+            # swap(left_offset, pivot_indices[1] - i)
 
-        return [left_offset, left_offset + i]  '''
+        # return [left_offset, left_offset + i] 
 
+        print(f'end items: {items}')
         swap(pivot_index_high, left_offset)
         return left_offset
 
