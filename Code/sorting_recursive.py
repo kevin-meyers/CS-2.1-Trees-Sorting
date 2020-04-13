@@ -116,16 +116,17 @@ def make_partitioner_of(items):
 
             low += 1
 
-      #  for i in range(pivot_index_high - pivot_index_low + 1):
-      #      if left_offset + i >= pivot_index_low:
-      #          break
+        for i in range(pivot_index_high - pivot_index_low + 1):
+            print(i)
+            if left_offset + i >= pivot_index_low:
+                break
 
-            # swap(left_offset, pivot_indices[1] - i)
+            swap(left_offset, pivot_index_high - i)
 
         # return [left_offset, left_offset + i] 
 
         print(f'end items: {items}')
-        swap(pivot_index_high, left_offset)
+        # swap(pivot_index_high, left_offset)
         return left_offset
 
     return partitioner
