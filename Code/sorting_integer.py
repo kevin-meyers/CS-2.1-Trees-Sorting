@@ -20,7 +20,7 @@ def counting_sort(numbers):
         ''' O(range + n) '''
         result = []
         for num, count in counts:  # O(range)
-            result.extend([num] * count)  # O(1 + n / range)
+            result.extend([num] * count)  # O(1) or O(n / range)
 
         return result
 

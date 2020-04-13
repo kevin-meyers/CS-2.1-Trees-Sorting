@@ -92,22 +92,36 @@ def make_partitioner_of(items):
         TODO: Memory usage: ??? Why and under what conditions?"""
         swap = make_swapper_of(items)
 
+        # Select random pivot and move to the end
         pivot_index = randint(low, high)
         swap(pivot_index, high)
-        pivot_index = high
-        pivot = items[pivot_index]
+
+        # Grab pivot from end
+        pivot_index_low = high
+        pivot_index_high = high
+        pivot = items[pivot_index_high]
 
         left_offset = low
-        i = low
-        while i <= high:
-            if items[i] < pivot:
-                swap(left_offset, i)
+        while low <= high:
+            '''if items[low] == pivot:
+                pivot_indices[0] -= 1
+                swap(low, pivot_indices[0])'''
+
+            if items[low] < pivot:
+                swap(left_offset, low)
                 left_offset += 1
 
-            i += 1
+            low += 1
 
-        swap(pivot_index, left_offset)
+        '''for i in range(pivot_indices[1] - pivot_indices[0] + 1):
+            if left_offset + i >= pivot_indices[0]:
+                break
 
+            swap(left_offset, pivot_indices[1] - i)
+
+        return [left_offset, left_offset + i]  '''
+
+        swap(pivot_index_high, left_offset)
         return left_offset
 
     return partitioner
@@ -119,13 +133,13 @@ def quick_sort(items):
     TODO: Best case running time: ??? Why and under what conditions?
     TODO: Worst case running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
-    partition = make_partitioner_of(items)
+    partitioner = make_partitioner_of(items)
 
     def recursive_function(low, high):
         if high <= low:
             return
 
-        pivot = partition(low, high)
+        pivot = partitioner(low, high)
 
         recursive_function(pivot + 1, high)
         recursive_function(low, pivot - 1)
@@ -133,7 +147,7 @@ def quick_sort(items):
     recursive_function(0, len(items)-1)
 
 
-
+'''
 if __name__ == '__main__':
     L = [1, 19, 4, 4, 4, 4, 4, 2, 25, 100, 13]
     partition = make_partitioner_of(L)
@@ -149,4 +163,4 @@ if __name__ == '__main__':
         else:
             assert item >= PIVOT
 
-
+'''
