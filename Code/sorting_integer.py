@@ -1,5 +1,6 @@
 #!python
 
+
 def counting_sort(numbers):
     """Sort given numbers (integers) by counting occurrences of each number,
     then looping over counts and copying that many numbers into output list.
@@ -14,24 +15,21 @@ def counting_sort(numbers):
         for num in nums:  # O(n)
             result[num - start] += 1  # O(1)
 
-        return enumerate(result, start)  # O(1)
+        return result, start  # O(1)
 
-    def expand_from(counts):
+    def expand_from(counts, start):
         ''' O(range + n) '''
-        result = []
-        for num, count in counts:  # O(range)
-            result.extend([num] * count)  # O(1) or O(n / range)
-
-        return result
-
+        index = 0
+        for num, count in enumerate(counts, start):  # O(range)
+            for _ in range(count):
+                numbers[index] = num  # O(1) or O(n / range)
+                index += 1
 
     if len(numbers) < 2:
         return numbers
 
     # O(3n + 2range) = O(n + range)
-    numbers[:] = expand_from(counts_of(numbers))
-
-
+    expand_from(*counts_of(numbers))
 
     # FIXME: Improve this to mutate input instead of creating new output list
 
@@ -54,10 +52,9 @@ def bucket_sort(numbers, num_buckets=10):
         result = []
         for bucket in buckets:  # O(b)
             counting_sort(bucket)  # O(n/b + step)
-            result.extend(bucket) # O(n/b)
+            result.extend(bucket)  # O(n/b)
 
         return result
-
 
     start = min(numbers)  # O(n)
     end = max(numbers)  # O(n)
@@ -66,7 +63,9 @@ def bucket_sort(numbers, num_buckets=10):
     step = (end - start) // num_buckets + 1  # O(1)
 
     # O(b) b is num_buckets
-    ranges = [build_compare_with(bound) for bound in range(start+step, end+step, step)]
+    ranges = [
+        build_compare_with(b) for b in range(start+step, end+step, step)
+    ]
     buckets = [[] for _ in range(num_buckets)]  # O(b)
     for num in numbers:  # O(n)
         # Consider using binary search to find the bucket each num belongs in
@@ -76,7 +75,6 @@ def bucket_sort(numbers, num_buckets=10):
                 break
 
     # bucket building is O(3n + 2b + nb) = O(n + b + nb) = O(n * b)
-    numbers[:] = expand_from(buckets) # O(n + range)
-
+    numbers[:] = expand_from(buckets)  # O(n + range)
 
     # FIXME: Improve this to mutate input instead of creating new output list
