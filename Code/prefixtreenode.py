@@ -3,15 +3,23 @@
 
 ASCII_LOWERCASE_START = 97
 
+
+def instantiate_letters_list():
+    """ The type of child is created as a letters list. """
+    return [None] * 26
+
+
 class PrefixTreeNode:
     """PrefixTreeNode: A node for use in a prefix tree that stores a single
     character from a string and a structure of children nodes below it, which
-    associates the next character in a string to the next node along its path from
-    the tree's root node to a terminal node that marks the end of the string."""
+    associates the next character in a string to the next node along its path
+    from the tree's root node to a terminal node that marks the end of the
+    string.
+    """
 
     # Choose a type of data structure to store children nodes in
     # Hint: Choosing list or dict affects implementation of all child methods
-    CHILDREN_TYPE = lambda : [None] * 26
+    CHILDREN_TYPE = instantiate_letters_list
 
     def __init__(self, character=None):
         """Initialize this prefix tree node with the given character value, an
@@ -33,6 +41,7 @@ class PrefixTreeNode:
 
     @staticmethod
     def index_for(character):
+        """ Helper function to get the index of a character. """
         return ord(character) - ASCII_LOWERCASE_START
 
     def has_child(self, character):
@@ -45,14 +54,15 @@ class PrefixTreeNode:
         character if it is amongst its children, or raise ValueError if not."""
         if self.has_child(character):
             return self.children[self.index_for(character)]
-        else:
-            raise ValueError(f'No child exists for character {character!r}')
+
+        raise ValueError(f'No child exists for character {character!r}')
 
     def add_child(self, character, child_node):
         """Add the given character and child node as a child of this node, or
         raise ValueError if given character is amongst this node's children."""
         if not self.has_child(character):
             self.children[self.index_for(character)] = child_node
+
         else:
             raise ValueError(f'Child exists for character {character!r}')
 
