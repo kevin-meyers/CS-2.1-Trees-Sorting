@@ -1,12 +1,49 @@
 #!python3
 
 
+ALPHABET_LENGTH = 26
 ASCII_LOWERCASE_START = 97
+ASCII_UPPERCASE_START = 65
+
+START_OFFSET = ASCII_UPPERCASE_START
 
 
-def instantiate_letters_list():
-    """ The type of child is created as a letters list. """
-    return [None] * 26
+class LetterList:
+    """ LetterList is a class that abstracts away the instantiation and
+    underlying datatype for PrefixTreeNode.
+    """
+    def __init__(self):
+        self.letters = [None] * ALPHABET_LENGTH
+        self.length = 0
+
+    @staticmethod
+    def index_for(character):
+        """ Helper function to get the index of a character. """
+        return ord(character) - START_OFFSET
+
+    def __len__(self):
+        return self.length
+
+    def __setitem__(self, character, child):
+        self.letters[self.index_for(character)] = child
+        self.length += 1
+
+    def __getitem__(self, character):
+        return self.letters[self.index_for(character)]
+
+    def __contains__(self, character):
+        return self[character] is not None
+
+    def __eq__(self, other):
+        return self.letters == other.letters
+
+    def __repr__(self):
+        """Return a code representation of this LetterList."""
+        return f'LetterList({self.letters!r})'
+
+    def __str__(self):
+        """Return a string view of this LetterList."""
+        return f'({self.letters})'
 
 
 class PrefixTreeNode:
@@ -19,7 +56,7 @@ class PrefixTreeNode:
 
     # Choose a type of data structure to store children nodes in
     # Hint: Choosing list or dict affects implementation of all child methods
-    CHILDREN_TYPE = instantiate_letters_list
+    CHILDREN_TYPE = LetterList
 
     def __init__(self, character=None):
         """Initialize this prefix tree node with the given character value, an
@@ -37,23 +74,18 @@ class PrefixTreeNode:
 
     def num_children(self):
         """Return the number of children nodes this prefix tree node has."""
-        return sum(x is not None for x in self.children)
-
-    @staticmethod
-    def index_for(character):
-        """ Helper function to get the index of a character. """
-        return ord(character) - ASCII_LOWERCASE_START
+        return len(self.children)
 
     def has_child(self, character):
         """Return True if this prefix tree node has a child node that
         represents the given character amongst its children."""
-        return self.children[self.index_for(character)] is not None
+        return character in self.children
 
     def get_child(self, character):
         """Return this prefix tree node's child node that represents the given
         character if it is amongst its children, or raise ValueError if not."""
         if self.has_child(character):
-            return self.children[self.index_for(character)]
+            return self.children[character]
 
         raise ValueError(f'No child exists for character {character!r}')
 
@@ -61,7 +93,7 @@ class PrefixTreeNode:
         """Add the given character and child node as a child of this node, or
         raise ValueError if given character is amongst this node's children."""
         if not self.has_child(character):
-            self.children[self.index_for(character)] = child_node
+            self.children[character] = child_node
 
         else:
             raise ValueError(f'Child exists for character {character!r}')
