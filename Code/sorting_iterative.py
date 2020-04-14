@@ -1,4 +1,5 @@
 #!python
+from copy import copy
 
 
 def is_sorted(items):
@@ -164,3 +165,11 @@ def cocktail_shaker_sort(items):
 
         if not swapped_same:
             offset += 1
+
+def sort(items):
+    ''' Makes a copy and sorts not in place, returns sorted '''
+    i = copy(items)  # Should make a copy
+
+    bubble_sort(i)
+
+    return i

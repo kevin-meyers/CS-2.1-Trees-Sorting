@@ -5,13 +5,13 @@ def counting_sort(numbers):
     then looping over counts and copying that many numbers into output list.
     TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
-    def counts_of(n):
+    def counts_of(nums):
         ''' O(2n + range)  '''
-        start = min(n)  # O(n)
-        end = max(n)  # O(n)
+        start = min(nums)  # O(n)
+        end = max(nums)  # O(n)
 
         result = [0] * (end - start + 1)  # O(range)
-        for num in n:  # O(n)
+        for num in nums:  # O(n)
             result[num - start] += 1  # O(1)
 
         return enumerate(result, start)  # O(1)
@@ -25,9 +25,8 @@ def counting_sort(numbers):
         return result
 
 
-    if numbers == []:
-        return []
-
+    if len(numbers) < 2:
+        return numbers
 
     # O(3n + 2range) = O(n + range)
     numbers[:] = expand_from(counts_of(numbers))
@@ -45,12 +44,15 @@ def bucket_sort(numbers, num_buckets=10):
     TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
     def build_compare_with(item):
+        '''  I seperated this function in case I want to change sorting
+        direction.
+        '''
         return lambda x: x < item
 
-    def expand_from(b):
+    def expand_from(buckets):
         ''' O(b * 2n/b + b * step) =  O(n + range) '''
         result = []
-        for bucket in b:  # O(b)
+        for bucket in buckets:  # O(b)
             counting_sort(bucket)  # O(n/b + step)
             result.extend(bucket) # O(n/b)
 

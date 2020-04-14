@@ -1,7 +1,7 @@
 #!python
 from random import randint
 
-from sorting_iterative import bubble_sort
+from sorting_iterative import bubble_sort, sort
 
 
 def merge(items1, items2):
@@ -50,13 +50,8 @@ def split_sort_merge(items):
     a list in sorted order.
     TODO: Running time: ??? Why and under what conditions?
     TODO: Memory usage: ??? Why and under what conditions?"""
-    first_half = items[len(items)//2:]
-    second_half = items[:len(items)//2]
 
-    bubble_sort(first_half)
-    bubble_sort(second_half)
-
-    items[:] = merge(first_half, second_half)
+    items[:] = merge(sort(left_half_of(items)), sort(right_half_of(items)))
 
 
 def _merge_sort(items):
