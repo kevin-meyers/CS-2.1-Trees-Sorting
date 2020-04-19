@@ -15,21 +15,24 @@ def counting_sort(numbers):
         for num in nums:  # O(n)
             result[num - start] += 1  # O(1)
 
-        return result, start  # O(1)
+        return enumerate(result, start)  # O(1)
 
-    def expand_from(counts, start):
+    def replace_many(num, start, count):
+        for offset in range(count):
+            numbers[start + offset] = num
+
+    def expand_from(counts):
         ''' O(range + n) '''
-        index = 0
-        for num, count in enumerate(counts, start):  # O(range)
-            for _ in range(count):
-                numbers[index] = num  # O(1) or O(n / range)
-                index += 1
+        start = 0
+        for num, count in counts:  # O(range)
+            replace_many(num, start, count)
+            start += count
 
     if len(numbers) < 2:
         return numbers
 
     # O(3n + 2range) = O(n + range)
-    expand_from(*counts_of(numbers))
+    expand_from(counts_of(numbers))
 
     # FIXME: Improve this to mutate input instead of creating new output list
 
