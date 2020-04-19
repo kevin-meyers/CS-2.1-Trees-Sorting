@@ -85,7 +85,12 @@ class PrefixTree:
         with the given prefix string."""
         # Create a list of completions in prefix tree
         completions = []
-        self._traverse(
+        node, depth_gone = self._find_node(prefix)
+        if depth_gone < len(prefix):
+            return completions
+
+        self._traverse(node, prefix[:depth_gone], completions.append)
+        return completions
 
     def strings(self):
         """Return a list of all strings stored in this prefix tree."""
