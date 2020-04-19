@@ -16,6 +16,13 @@ class LetterList:
         self.letters = [None] * ALPHABET_LENGTH
         self.length = 0
 
+    def __iter__(self):
+        # TODO: consider keeping track of letters in the list that are filled.
+        # also these are children NODES!
+        for letter in self.letters:
+            if letter is not None:
+                yield letter
+
     @staticmethod
     def index_for(character):
         """ Helper function to get the index of a character. """
