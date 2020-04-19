@@ -57,20 +57,28 @@ class PrefixTree:
 
             current = current[character]
 
-        current.terminal = True
-
+        # if string already exists
+        if current.terminal is not True:
+            current.terminal = True
+            self.size += 1
 
     def _find_node(self, string):
         """Return a pair containing the deepest node in this prefix tree that
         matches the longest prefix of the given string and the node's depth.
         The depth returned is equal to the number of prefix characters matched.
         Search is done iteratively with a loop starting from the root node."""
-        # Match the empty string
-        if len(string) == 0:
-            return self.root, 0
+        current = self.root
+        depth = 0
+
         # Start with the root node
-        node = self.root
-        # TODO
+        for character in string:
+            if character not in current:
+                break
+
+            current = current[character]
+            depth += 1
+
+        return current, depth
 
     def complete(self, prefix):
         """Return a list of all strings stored in this prefix tree that start
