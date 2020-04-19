@@ -35,15 +35,30 @@ class PrefixTree:
 
     def is_empty(self):
         """Return True if this prefix tree is empty (contains no strings)."""
-        # TODO
+        return self.size == 0
 
     def contains(self, string):
         """Return True if this prefix tree contains the given string."""
-        # TODO
+        current = self.root
+        for character in string:
+            if character not in current:
+                return False
+
+            current = current[character]
+
+        return current.terminal
 
     def insert(self, string):
         """Insert the given string into this prefix tree."""
-        # TODO
+        current = self.root
+        for character in string:
+            if character not in current:
+                current[character] = PrefixTreeNode(character)
+
+            current = current[character]
+
+        current.terminal = True
+
 
     def _find_node(self, string):
         """Return a pair containing the deepest node in this prefix tree that
@@ -120,14 +135,14 @@ def create_prefix_tree(strings):
 
 if __name__ == '__main__':
     # Create a dictionary of tongue-twisters with similar words to test with
-    tongue_twisters = {
+    TONGUE_TWISTERS = {
         'Seashells': 'Shelly sells seashells by the sea shore'.split(),
         # 'Peppers': 'Peter Piper picked a peck of pickled peppers'.split(),
         # 'Woodchuck': ('How much wood would a wood chuck chuck'
         #                ' if a wood chuck could chuck wood').split()
     }
     # Create a prefix tree with the similar words in each tongue-twister
-    for name, strings in tongue_twisters.items():
+    for name, s in TONGUE_TWISTERS.items():
         print('\n' + '='*80 + '\n')
         print(f'{name} tongue-twister:')
-        create_prefix_tree(strings)
+        create_prefix_tree(s)
