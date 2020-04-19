@@ -76,10 +76,16 @@ class PrefixTreeNode:
         """Return the number of children nodes this prefix tree node has."""
         return len(self.children)
 
+    def __len__(self):
+        return self.num_children()
+
     def has_child(self, character):
         """Return True if this prefix tree node has a child node that
         represents the given character amongst its children."""
         return character in self.children
+
+    def __contains__(self, character):
+        return self.has_child(character)
 
     def get_child(self, character):
         """Return this prefix tree node's child node that represents the given
@@ -89,6 +95,9 @@ class PrefixTreeNode:
 
         raise ValueError(f'No child exists for character {character!r}')
 
+    def __getitem__(self, character):
+        return self.get_child(character)
+
     def add_child(self, character, child_node):
         """Add the given character and child node as a child of this node, or
         raise ValueError if given character is amongst this node's children."""
@@ -97,6 +106,9 @@ class PrefixTreeNode:
 
         else:
             raise ValueError(f'Child exists for character {character!r}')
+
+    def __setitem__(self, character, child_node):
+        self.add_child(character, child_node)
 
     def __repr__(self):
         """Return a code representation of this prefix tree node."""
