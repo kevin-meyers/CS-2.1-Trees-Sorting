@@ -2,8 +2,8 @@
 
 
 ALPHABET_LENGTH = 26
-ASCII_LOWERCASE_START = 97
-ASCII_UPPERCASE_START = 65
+ASCII_LOWERCASE_START = ord('a')
+ASCII_UPPERCASE_START = ord('A')
 
 START_OFFSET = ASCII_UPPERCASE_START
 
@@ -26,6 +26,7 @@ class LetterList:
     @staticmethod
     def index_for(character):
         """ Helper function to get the index of a character. """
+        #TODO: check to make sure character is valid, raise error
         return ord(character) - START_OFFSET
 
     def __len__(self):
