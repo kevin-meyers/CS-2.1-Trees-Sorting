@@ -25,10 +25,14 @@ def autocomplete_setup(vocabulary, algorithm='linear_search'):
     if algorithm == 'linear_search':
         # Use the given vocabulary list
         return vocabulary
-    elif algorithm == 'trie':
-        from trie import Trie
+    if algorithm == 'trie':
+        from prefixtree import PrefixTree
         # Create a trie structure with the vocabulary
-        return Trie(vocabulary)
+        return PrefixTree(vocabulary)
+
+    raise ValueError(
+        f'{algorithm} is not implemented, pick from "linear_search", "trie"'
+    )
 
 
 def autocomplete(prefix, structure, algorithm='linear_search'):
@@ -37,9 +41,14 @@ def autocomplete(prefix, structure, algorithm='linear_search'):
     if algorithm == 'linear_search':
         # Search the list using linear search
         return [word for word in structure if word.startswith(prefix)]
-    elif algorithm == 'trie':
+
+    if algorithm == 'trie':
         # Search the trie structure for the prefix
         return structure.search(prefix)
+
+    raise ValueError(
+        f'{algorithm} is not implemented, pick from "linear_search", "trie"'
+    )
 
 
 def main():
@@ -96,7 +105,7 @@ def main():
         for prefix in prefixes:
             completions = autocomplete(prefix, structure)
             num_completions += len(completions)
-            # print('Completions of {}: {}'.format(prefix, ', '.join(completions)))
+            print('Completions of {}: {}'.format(prefix, ', '.join(completions)))
 
         # Mark the clock
         end_time = time.time()
