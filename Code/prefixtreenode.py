@@ -26,11 +26,15 @@ class LetterList:
     @staticmethod
     def index_for(character):
         """ Helper function to get the index of a character. """
-        #TODO: check to make sure character is valid, raise error
+        # TODO: check to make sure character is valid, raise error
         return ord(character) - START_OFFSET
 
     def __len__(self):
         return self.length
+
+    def __delitem__(self, character):
+        self.letters[self.index_for(character)] = None
+        self.length -= 1
 
     def __setitem__(self, character, child):
         self.letters[self.index_for(character)] = child
@@ -105,6 +109,9 @@ class PrefixTreeNode:
 
     def __getitem__(self, character):
         return self.get_child(character)
+
+    def remove_child(self, character):
+        del self.children[character]
 
     def add_child(self, character, child_node):
         """Add the given character and child node as a child of this node, or
