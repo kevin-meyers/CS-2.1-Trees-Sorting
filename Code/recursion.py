@@ -7,7 +7,7 @@ def fibonacci(n):
     fibonacci(1) = 1
     fibonacci(n) = fibonacci(n - 1) + fibonacci(n - 2), for n > 1"""
     # Check if n is negative or not an integer (invalid input)
-    if n < 0 or not isinstance(n, int):
+    if not isinstance(n, int) or n < 0:
         raise ValueError('fibonacci is undefined for n = {!r}'.format(n))
     # Implement fibonacci_recursive, _memoized, and _dynamic below, then
     # change this to call your implementation to verify it passes all tests
