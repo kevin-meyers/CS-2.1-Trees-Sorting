@@ -29,6 +29,14 @@ class PrefixTree:
             for string in strings:
                 self.insert(string)
 
+    class decorators:
+        @staticmethod
+        def preprocess(func):
+            def inner(self, string, *args, **kwargs):
+                processed = ''.join([x for x in string if x.isalpha()]).upper()
+                return func(self, processed, *args, **kwargs)
+            return inner
+
     def __repr__(self):
         """Return a string representation of this prefix tree."""
         return f'PrefixTree({self.strings()!r})'
@@ -37,12 +45,14 @@ class PrefixTree:
         """Return True if this prefix tree is empty (contains no strings)."""
         return self.size == 0
 
+    @decorators.preprocess
     def contains(self, string):
         """Return True if this prefix tree contains the given string."""
         current, depth_gone = self._find_node(string)
 
         return depth_gone == len(string) and current.is_terminal()
 
+    @decorators.preprocess
     def insert(self, string):
         """Insert the given string into this prefix tree."""
         current, depth_gone = self._find_node(string)
@@ -73,6 +83,7 @@ class PrefixTree:
 
         return current, depth
 
+    @decorators.preprocess
     def complete(self, prefix):
         """Return a list of all strings stored in this prefix tree that start
         with the given prefix string."""
@@ -102,21 +113,24 @@ class PrefixTree:
         for child in node.children:
             self._traverse(child, prefix + child.character, visit)
 
-    def delete(self, string, node=0, index=0):
-        if node == 0:  # SCARY BECAUSE OF BASE CASE
-            node = self.root
+    @decorators.preprocess
+    def delete(self, string):
+        def recursion(node, index):
+            if index >= len(string):
+                return node.is_terminal()
 
-        if node is None:
-            return index >= len(string)
+            if string[index] not in node:
+                return False
 
-        did_delete = self.delete(string, node[string[index]], index + 1)
+            did_delete = recursion(node[string[index]], index + 1)
 
-        if did_delete:
-            node[string[index]] = None
-            if node.is_terminal() and node.num_children() == 0:
-                return True
+            if did_delete:
+                node.remove_child(string[index])
+                if not node.is_terminal() and node.num_children() == 0:
+                    return True
 
-        return False
+            return False
+        return recursion(self.root, 0)
 
 
 def create_prefix_tree(strings):
