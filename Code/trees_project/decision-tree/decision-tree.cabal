@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Utils
   other-modules:
       Paths_decision_tree
   hs-source-dirs:
@@ -36,6 +37,7 @@ library
       base >=4.7 && <5
       , multiset
       , lens
+      , containers
   default-language: Haskell2010
 
 executable decision-tree-exe
