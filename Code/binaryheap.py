@@ -21,8 +21,7 @@ class BinaryMinHeap(object):
 
     def is_empty(self):
         """Return True if this heap is empty, or False otherwise."""
-        # TODO: Check if empty based on how many items are in the list
-        # ...
+        return self.size() == 0
 
     def size(self):
         """Return the number of items in this heap."""
@@ -55,7 +54,7 @@ class BinaryMinHeap(object):
             # Remove and return the only item
             return self.items.pop()
         assert self.size() > 1
-        min_item = self.items[0]
+        min_item = self.items[0] # TODO: Swap first and last item then pop last
         # Move the last item to the root and bubble down to the leaves
         last_item = self.items.pop()
         self.items[0] = last_item

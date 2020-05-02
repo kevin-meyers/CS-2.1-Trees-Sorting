@@ -54,13 +54,22 @@ minGini xs@((_, _, base):_) =
   foldr (\p acc -> updateAcc acc (totoalGini len p, view _1 p)) (baseGini, 0) xs
   where
     len = length xs
-    baseGini = probabilitiesFromP base
+    baseGini = giniIndexOf $ probabilitiesFromP base
 
 weightedGini :: Int -> Partition -> Double
-weightedGini offset = (fromIntegral offset *) . giniIndexOf . probabilitiesFor
+weightedGini offset = (fromIntegral offset *) . giniIndexOf . probabilitiesFromP
 
-bestSplit :: Features -> (Int, Int, Int)
-bestSplit fs = foldr (\(i, x) acc -> minGini x) (100000, 0, 0) fs
+bestSplit :: Features -> (Int, Int)
+bestSplit =
+  dec . foldr (\(i, x) acc -> isBetterGini (minGini x) i acc) (2.0, 0, 0) -- gini can at most be 1
+
+dec :: (Int, Int, Int) -> (Int, Int)
+dec (_, x, y) = (x, y)
+
+isBetterGini :: MinSplitter -> Int -> (Double, Int, Int) -> (Double, Int, Int)
+isBetterGini (gini, offset) feat acc@(accGini, _, _)
+  | gini < accGini = (gini, feat, offset)
+  | otherwise = acc
 -- Creating the partitions! For each "feature"/column from X we make a tuple
 -- list of the feature tied to y. Then we sort the list based on the feature
 --  then going down the list one at a time, building partitions and the index

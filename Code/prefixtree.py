@@ -117,20 +117,23 @@ class PrefixTree:
     def delete(self, string):
         def recursion(node, index):
             if index >= len(string):
-                return node.is_terminal()
+                return node.is_terminal() and node.num_children() == 0
 
-            if string[index] not in node:
+            next_char = string[index]
+
+            if next_char not in node:
                 return False
 
-            did_delete = recursion(node[string[index]], index + 1)
+            did_delete = recursion(node[next_char], index + 1)
 
             if did_delete:
-                node.remove_child(string[index])
+                node.remove_child(next_char)
                 if not node.is_terminal() and node.num_children() == 0:
                     return True
 
             return False
         return recursion(self.root, 0)
+
 
 
 def create_prefix_tree(strings):
