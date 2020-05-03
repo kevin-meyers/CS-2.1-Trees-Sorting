@@ -24,9 +24,14 @@ train xs ys = buildTree $ partitionsFrom xs ys
 
 buildTree :: Inputs Double -> DecisionTree Double
 buildTree (xs, ys)
-  | size describeY ys < 3 = Leaf (MultiSet.findMax describeY ys)
-  | otherwise = Node (> t) (buildTree xs left) (buildTree xs right)
+  | MultiSet.size y < 3 = Leaf (MultiSet.findMax y)
+  | otherwise =
+    Node
+      (\x -> x !! bestFeat > 5)
+      (buildTree (xs, left))
+      (buildTree (xs, right))
   where
+    y = describeY ys
     (bestFeat, bestIndex) = getBestSplit ys
     (left, right) = childrenData bestIndex ys
     t = midPoint bestIndex (xs !! bestFeat)
