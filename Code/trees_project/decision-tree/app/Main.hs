@@ -22,6 +22,10 @@ train xs ys = buildTree $ partitionsFrom xs ys
 
 buildTree :: Inputs Double -> DecisionTree Double
 buildTree (xs, ys) = Leaf 5
+  where
+    (bestFeat, bestIndex) = getBestSplit ys
+    (left, right) = childrenData bestIndex ys
+    t = midPoint bestIndex (xs !! bestFeat)
 
-midpoint :: Int -> Partitions -> Partitions
-midpoint i ys = (ys !! i + ys !! (i - 1)) / 2
+midPoint :: Int -> [Double] -> Double
+midPoint i ys = (ys !! i + (ys !! (i - 1))) / 2
