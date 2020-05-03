@@ -1,6 +1,7 @@
 module Main where
 
 import Lib
+import Utils
 
 main :: IO ()
-main = someFunc
+main = putStrLn "Please"

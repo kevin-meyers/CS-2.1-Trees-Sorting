@@ -1,13 +1,13 @@
 {-# LANGUAGE TupleSections #-}
 
-module Utils
-  (
-  ) where
+module Utils where
 
 import Data.Function (on)
 import Data.List (sortBy)
 import Data.MultiSet (MultiSet)
 import qualified Data.MultiSet as MultiSet
+
+type PartitionPair = (MultiSet Int, MultiSet Int)
 
 orderedYs :: (Ord a) => [a] -> [Int] -> ([a], [Int])
 orderedYs xs ys =
@@ -16,8 +16,16 @@ orderedYs xs ys =
 sortTuple :: (Ord a) => [a] -> [b] -> [(a, b)]
 sortTuple xs ys = sortBy (compare `on` fst) (zip xs ys)
 
-partitionsFrom :: [Int] -> [(MultiSet Int, MultiSet Int)]
-partitionsFrom xs = scanr shiftMaps (MultiSet.empty, MultiSet.fromList xs) xs
+partition :: [Int] -> [PartitionPair]
+partition xs = scanr shiftMaps (MultiSet.fromList xs, MultiSet.empty) xs
 
-shiftMaps :: Int -> (MultiSet Int, MultiSet Int) -> (MultiSet Int, MultiSet Int)
-shiftMaps x (left, right) = (MultiSet.insert x left, MultiSet.delete x right)
+shiftMaps :: Int -> PartitionPair -> PartitionPair
+shiftMaps x (left, right) = (MultiSet.delete x left, MultiSet.insert x right)
+
+partitionsFrom :: (Ord a) => [[a]] -> [Int] -> [[PartitionPair]]
+partitionsFrom xs ys = map (`createFeatures` ys) xs
+
+createFeatures :: (Ord a) => [a] -> [Int] -> [PartitionPair]
+createFeatures xs ys = partition inOrderYs
+  where
+    (thresh, inOrderYs) = orderedYs xs ys
