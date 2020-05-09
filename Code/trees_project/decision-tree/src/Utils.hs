@@ -41,10 +41,3 @@ getBestSplit ys = bestSplit $ zip [0 ..] $ map (zip [0 ..]) ys
 childrenData ::
      Int -> [[PartitionPair]] -> ([[PartitionPair]], [[PartitionPair]])
 childrenData i = foldr (\y (l, r) -> (take i y : l, drop i y : r)) ([], [])
-
--- this does it all i guess...
-master xs ys = right
-  where
-    (threshs, yss) = partitionsFrom xs ys
-    (bestFeat, bestIndex) = getBestSplit yss
-    (left, right) = childrenData bestIndex yss
